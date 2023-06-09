@@ -53,12 +53,7 @@ class ChurchCalendar(ABC):
 
     def sunday_before_christmas(self, year):
         christmas = self.christmas(year)
-        weekday_of_christmas = christmas.weekday()
-        from_sunday_to_christmas = 6 - weekday_of_christmas
-        print("christmas", christmas.strftime("%a"), "weekday", weekday_of_christmas, "days from Sunday", from_sunday_to_christmas)
-        if from_sunday_to_christmas == 0:
-            from_sunday_to_christmas = 7
-        return christmas - datetime.timedelta(days=from_sunday_to_christmas)
+        return christmas - datetime.timedelta(days=christmas.isoweekday() or 7)
 
     def advent_sunday(self, year):
         """Return the date of Advent Sunday for a given year."""
