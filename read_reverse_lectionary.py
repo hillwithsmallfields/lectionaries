@@ -6,15 +6,15 @@ import re
 from bs4 import BeautifulSoup
 
 def day_years(date):
-    m = re.match("(.+ [0-9]+)([,ABC]+)", date)
+    m = re.match("(.+ [0-9]+)([,ABC]+)$", date)
     if m:
         return m.group(1), tuple(m.group(2).split(','))
-    m = re.match("(.+) ([,ABC]+)", date)
+    m = re.match("(.+) ([,ABC]+)$", date)
     if m:
         return m.group(1), tuple(m.group(2).split(','))
     return date, ('A', 'B', 'C')
 
-by_date = collections.defaultdict(list)
+by_date = collections.defaultdict(lambda: collections.defaultdict(list))
 
 for row in BeautifulSoup(open(os.path.expanduser("~/Downloads/Reverse Lectionary.html"),
                               'rb').read(),
@@ -23,8 +23,12 @@ for row in BeautifulSoup(open(os.path.expanduser("~/Downloads/Reverse Lectionary
     readings = cells[0]
     dates = cells[1]
     for date in dates:
-        for reading in readings:
-            by_date[day_years(date)].append(reading)
+        day, years = day_years(date)
+        for year in years:
+            for reading in readings:
+                by_date[day][year].append(reading)
 
-for k in sorted(by_date.keys()):
-    print(k, by_date[k])
+for dk in sorted(by_date.keys()):
+    ys = by_date[dk]
+    for yk in sorted(ys.keys()):
+        print(dk, yk, "; ".join(ys[yk]))
