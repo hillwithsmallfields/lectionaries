@@ -47,6 +47,10 @@ class ChurchCalendar(ABC):
         return None
 
     @abstractmethod
+    def epiphany(self, year):
+        """Return the date of Epiphany for a given year."""
+
+    @abstractmethod
     def ash_wednesday(self, year):
         """Return the date of Ash Wednesday for a given year."""
         return None
@@ -59,6 +63,23 @@ class ChurchCalendar(ABC):
         """Return the date of Advent Sunday for a given year."""
         return self.sunday_before_christmas(year) - datetime.timedelta(days=28)
 
+    def is_advent(self, date):
+        """Return whether a date is in Advent."""
+        return self.advent_sunday(date.year) <= date and date < self.christmas(date.year)
+
+    def is_christmas(self, date):
+        """Return whether a date is in the Christmas season."""
+        # TODO: I don't think this is right yet
+        return self.christmas(date.year) <= date and date <= self.epiphany(date.year+1)
+
+    def is_lent(self, date):
+        """Return whether a date is in Lent."""
+        return self.ash_wednesday(date.year) <= date and date < self.easter(date.year)
+
+    def is_ordinary(self, date):
+        """Return whether a date is in ordinary time."""
+        return not(self.is_advent(date) or self.is_christmas(date) or self.is_lent(date))
+
 class WesternChurchCalendar(ChurchCalendar):
 
     def easter(self, year):
@@ -69,6 +90,9 @@ class WesternChurchCalendar(ChurchCalendar):
 
     def christmas(self, year):
         return datetime.date(year, 12, 25)
+
+    def epiphany(self, year):
+        return datetime.date(year, 1, 6)
 
     def ash_wednesday(self, year):
         return self.easter(year) - datetime.timedelta(days=46)
