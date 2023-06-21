@@ -65,7 +65,7 @@ class WesternChurchCalendar(ChurchCalendar):
         return dateutil.easter.easter(year)
 
     def pentecost(self, year):
-        return self.easter(year) + datetime.timedelta(days=50)
+        return self.easter(year) + datetime.timedelta(days=49)
 
     def christmas(self, year):
         return datetime.date(year, 12, 25)
