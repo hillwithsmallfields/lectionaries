@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Christian lectionaries through a Python interface."""
+"""Church calendars through a Python interface."""
 
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -62,9 +62,20 @@ class ChurchCalendar(ABC):
         """Return whether a date is in Lent."""
         return self.ash_wednesday(date.year) <= date and date < self.easter(date.year)
 
+    def is_easter(self, date):
+        """Return whether a date is in the Easter season."""
+        return self.easter(date.year) <= date < self.pentecost(date.year)
+
     def is_ordinary(self, date):
         """Return whether a date is in ordinary time."""
         return not(self.is_advent(date) or self.is_christmas(date) or self.is_lent(date))
+
+    def season(self, date):
+        return (Season.ADVENT if self.is_advent(date)
+                else (Season.CHRISTMAS if self.is_christmas(date)
+                      else (Season.LENT if self.is_lent(date)
+                            else (Season.EASTER if self.is_easter(date)
+                                  else Season.ORDINARY))))
 
 class WesternChurchCalendar(ChurchCalendar):
 

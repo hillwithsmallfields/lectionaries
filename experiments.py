@@ -33,4 +33,5 @@ for day in range(365):
           "advent" if cal.is_advent(day_date) else "",
           "christmas" if cal.is_christmas(day_date) else "",
           "lent" if cal.is_lent(day_date) else "",
-          "ordinary" if cal.is_ordinary(day_date) else "")
+          "ordinary" if cal.is_ordinary(day_date) else "",
+          cal.season(day_date))
