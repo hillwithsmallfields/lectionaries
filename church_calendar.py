@@ -55,8 +55,7 @@ class ChurchCalendar(ABC):
 
     def is_christmas(self, date):
         """Return whether a date is in the Christmas season."""
-        # TODO: I don't think this is right yet
-        return self.christmas(date.year) <= date and date <= self.epiphany(date.year+1)
+        return self.christmas(date.year) <= date or date <= self.epiphany(date.year)
 
     def is_lent(self, date):
         """Return whether a date is in Lent."""
