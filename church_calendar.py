@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 import datetime
 import dateutil.easter
+import inflect
 
 class Season(Enum):
     ORDINARY = 0          # from Pentecost to Advent
@@ -15,7 +16,59 @@ class Season(Enum):
     LENT = 4              # begins 40 weekdays before Easter
     EASTER = 5            # lasts 50 days from Easter, up to Pentecost
 
+SPECIAL_DAY_NAMES = {
+    (Season.ADVENT, 0): "Advent Sunday",
+    (Season.CHRISTMAS, 0): "Christmas Day",
+    (Season.CHRISTMAS, 1): "St Stephen's Day",
+    (Season.EPIPHANY, 0): "Epiphany",
+    (Season.LENT, 0): "Ash Wednesday",
+    (Season.LENT, 39): "Palm Sunday",
+    (Season.LENT, 40): "Holy Monday",
+    (Season.LENT, 41): "Holy Tuesday",
+    (Season.LENT, 42): "Holy Wednesday",
+    (Season.LENT, 43): "Maundy Thursday",
+    (Season.LENT, 44): "Good Friday",
+    (Season.LENT, 45): "Holy Saturday",
+    (Season.EASTER, 0): "Easter Sunday",
+    (Season.EASTER, 7): "First Sunday after Easter",
+    (Season.EASTER, 14): "Second Sunday after Easter",
+    (Season.EASTER, 21): "Third Sunday after Easter",
+    (Season.EASTER, 28): "Fourth Sunday after Easter",
+    (Season.EASTER, 28): "Fifth Sunday after Easter",
+    (Season.EASTER, 35): "Sixth Sunday after Easter",
+    (Season.EASTER, 42): "Seventh Sunday after Easter",
+    (Season.EASTER, 7): "First Sunday after Easter",
+    (Season.ORDINARY, 0): "Pentecost",
+    (Season.ORDINARY, 7): "Trinity Sunday",
+}
+
+DAYS_TO_LENT_NAMES = {
+    1: "Shrove Tuesday",
+    3: "Quinquegesima Sunday",
+    10: "Sexagesima Sunday",
+    17: "Septuagesima Sunday"
+}
+
 class ChurchCalendar(ABC):
+
+    def __init__(self):
+        self._inflector = None
+
+    def inflector(self):
+        if self._inflector == None:
+            self._inflector = inflect.engine()
+        return self._inflector
+
+    @staticmethod
+    def season_name(season):
+        return {
+            Season.ORDINARY: "Ordinary time",
+            Season.ADVENT: "Advent",
+            Season.CHRISTMAS: "Christmas",
+            Season.EPIPHANY: "Epiphany",
+            Season.LENT: "Lent",
+            Season.EASTER: "Easter",
+        }.get(season, "Unknown")
 
     @abstractmethod
     def easter(self, year):
@@ -112,6 +165,27 @@ class ChurchCalendar(ABC):
                                   else ((Season.EASTER, (date - self.easter(date.year)).days)
                                         if self.is_easter(date)
                                         else (Season.ORDINARY, (date - self.pentecost(date.year)).days))))))
+
+    def liturgical_week(self, date):
+        """Return the liturgical name for a date."""
+        season, days_into_season = self.season_days(date)
+        if date == self.christmas(date.year) - datetime.timedelta(days=1):
+            return "Christmas Eve"
+        if season == Season.EPIPHANY:
+            days_to_lent = (self.ash_wednesday(date.year) - date).days
+            if days_to_lent in DAYS_TO_LENT_NAMES:
+                return DAYS_TO_LENT_NAMES[days_to_lent]
+        inflector = self.inflector()
+        special = SPECIAL_DAY_NAMES.get((season, days_into_season))
+        if special:
+            return special
+        week_in_season = (days_into_season // 7)+1
+        preposition = (" of " if season in (Season.CHRISTMAS, Season.EASTER)
+                       else " after the " if season == Season.EPIPHANY
+                       else " in ")
+        return (inflector.number_to_words(inflector.ordinal(week_in_season)).capitalize()
+                + " " + date.strftime("%A")
+                + preposition + self.season_name(season))
 
 class WesternChurchCalendar(ChurchCalendar):
 
