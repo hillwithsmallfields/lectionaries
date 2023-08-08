@@ -68,11 +68,16 @@ class ChurchCalendar(ABC):
 
     def is_advent(self, date):
         """Return whether a date is in Advent."""
-        return self.advent_sunday(date.year) <= date and date < self.christmas(date.year)
+        return self.advent_sunday(date.year) <= date < self.christmas(date.year)
 
     def is_christmas(self, date):
         """Return whether a date is in the Christmas season."""
-        return self.christmas(date.year) <= date or date <= self.epiphany(date.year)
+        return self.christmas(date.year) <= date or date < self.epiphany(date.year)
+
+    def is_epiphany(self, date):
+        """Return whether a date is in the Epiphany season.
+        This counts the season as continuing to the start of Lent."""
+        return self.epiphany(date.year) <= date < self.ash_wednesday(date.year)
 
     @abstractmethod
     def is_lent(self, date):
@@ -85,22 +90,28 @@ class ChurchCalendar(ABC):
 
     def is_ordinary(self, date):
         """Return whether a date is in ordinary time."""
-        return not(self.is_advent(date) or self.is_christmas(date) or self.is_lent(date))
+        return not(self.is_advent(date)
+                   or self.is_christmas(date)
+                   or self.is_epiphany(date)
+                   or self.is_lent(date)
+                   or self.is_easter(date))
 
     def season_days(self, date):
-        """Return the season for a given date, and the number of days into it."""
+        """Return the season for a given date, and the number of days into it.
+
+        Note that the day number in the season is zero-based."""
         return ((Season.ADVENT, (date - self.advent_sunday(date.year)).days)
                 if self.is_advent(date)
                 else ((Season.CHRISTMAS,
                        (date - self.christmas(date.year - (1 if date.month == 1 else 0))).days)
                       if self.is_christmas(date)
-                      else ((Season.LENT, (date - self.ash_wednesday(date.year)).days)
-                            if self.is_lent(date)
-                            else ((Season.EASTER, (date - self.easter(date.year)).days)
-                                  if self.is_easter(date)
-                                  else (Season.ORDINARY,
-                                        # TODO: not sure what to do here
-                                        )))))
+                      else ((Season.EPIPHANY, (date - self.epiphany(date.year)).days)
+                            if self.is_epiphany(date)
+                            else ((Season.LENT, (date - self.ash_wednesday(date.year)).days)
+                                  if self.is_lent(date)
+                                  else ((Season.EASTER, (date - self.easter(date.year)).days)
+                                        if self.is_easter(date)
+                                        else (Season.ORDINARY, (date - self.pentecost(date.year)).days))))))
 
 class WesternChurchCalendar(ChurchCalendar):
 
