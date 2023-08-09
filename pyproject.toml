@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lectionaries"
+version = "0.0.1"
+authors = [
+  { name="John C. G. Sturdy", email="jcg.sturdy@gmail.com" },
+]
+description = "Church calendars and lectionaries"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GPL3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/hillwithsmallfields/lectionaries"
