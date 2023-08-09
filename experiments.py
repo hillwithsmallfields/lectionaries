@@ -26,12 +26,18 @@ for year in range(2000, 2030):
           with_day(cal.easter(year)),
           with_day(cal.pentecost(year)))
 
-for day in range(365):
-    base = datetime.date(2023, 1, 1)
-    day_date = base + datetime.timedelta(days=day)
-    print(day_date,
-          "advent" if cal.is_advent(day_date) else "",
-          "christmas" if cal.is_christmas(day_date) else "",
-          "lent" if cal.is_lent(day_date) else "",
-          "ordinary" if cal.is_ordinary(day_date) else "",
-          cal.season(day_date))
+def describe_year_days(year):
+    for day in range(365):
+        base = datetime.date(year, 1, 1)
+        day_date = base + datetime.timedelta(days=day)
+        print(with_day(day_date),
+              "advent" if cal.is_advent(day_date) else "------",
+              "christmas" if cal.is_christmas(day_date) else "---------",
+              "epiphany" if cal.is_epiphany(day_date) else "--------",
+              "lent" if cal.is_lent(day_date) else "----",
+              "easter" if cal.is_easter(day_date) else "------",
+              "ordinary" if cal.is_ordinary(day_date) else "--------",
+              cal.season_days(day_date),
+              cal.liturgical_week(day_date))
+
+describe_year_days(2023)
