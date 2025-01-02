@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import church_calendar
+import lectionaries.church_calendar
 import lectionaries
 
 import datetime
@@ -14,7 +14,7 @@ for countdown in range(40, -1, -1):
     full_date = christmas - datetime.timedelta(days=countdown)
     print(full_date, full_date.weekday(), full_date.strftime("%a"), "*" if full_date.weekday() == 6 else "", "<==" if countdown==28 else "")
 
-cal = church_calendar.WesternChurchCalendar()
+cal = lectionaries.church_calendar.WesternChurchCalendar()
 
 print("year christmas      sunbefore      advent sun     ash weds       easter       pentecost")
 for year in range(2000, 2030):
@@ -40,4 +40,4 @@ def describe_year_days(year):
               cal.season_days(day_date),
               cal.liturgical_week(day_date))
 
-describe_year_days(2023)
+describe_year_days(2025)
