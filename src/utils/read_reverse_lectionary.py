@@ -51,7 +51,7 @@ def print_lectionary(lectionary):
 
 # print_lectionary(entries_by_date("~/Downloads/Reverse Lectionary.html"))
 
-def write_lectionary(filename, lectionary):
+def write_lectionary_csv(filename, lectionary):
     with open(filename, 'w') as outstream:
         writer = csv.DictWriter(outstream, ['Day', 'A', 'B', 'C'])
         writer.writeheader()
@@ -61,4 +61,21 @@ def write_lectionary(filename, lectionary):
             row['Day'] = date
             writer.writerow(row)
 
-write_lectionary("/tmp/lectionary.csv", entries_by_date("~/Downloads/Reverse Lectionary.html"))
+def write_lectionary_python(filename, lectionary):
+    with open(filename, 'w') as outstream:
+        outstream.write("# Providence: The person who entered this data asked not to be credited for it\n")
+        outstream.write("LECTIONARY_DATA = {\n")
+        for name, lityears in lectionary.items():
+            outstream.write("  '%s': {\n" % name)
+            for year in ('A', 'B', 'C'):
+                readings = lityears[year]
+                outstream.write("    '%s': [" % year)
+                outstream.write(",\n          ".join("'%s'" % reading for reading in readings))
+                outstream.write("],\n")
+            outstream.write("  },\n")
+        outstream.write("}\n")
+
+if __name__ == "__main__":
+    lectionary = entries_by_date("~/Downloads/Reverse Lectionary.html")
+    write_lectionary_csv("/tmp/lectionary.csv", lectionary)
+    write_lectionary_python("/tmp/lectionary_data.py", lectionary)
