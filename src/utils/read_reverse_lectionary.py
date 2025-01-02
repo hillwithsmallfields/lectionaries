@@ -5,6 +5,7 @@ import csv
 import os.path
 import re
 from bs4 import BeautifulSoup
+import pythonbible as bible
 
 def day_years(date):
     m = re.match("(.+ [0-9]+)([,ABC]+)$", date)
@@ -14,6 +15,32 @@ def day_years(date):
     if m:
         return m.group(1), tuple(m.group(2).split(','))
     return date, ('A', 'B', 'C')
+
+def reading_type(reading):
+    """Return which type a reading is."""
+    if reading.startswith("Canticle"):
+        return "Canticle"
+    references = bible.get_references(reading)
+    if not references:
+        return "Reading"
+    book = references[0].book
+    if book == bible.Book.PSALMS:
+        return "Psalms"
+    if book in bible.BookGroup.OLD_TESTAMENT.books:
+        return "Old Testament"
+    if book in bible.BookGroup.NEW_TESTAMENT_GOSPELS.books:
+        return "Gospel"
+    if book in bible.BookGroup.NEW_TESTAMENT_EPISTLES.books:
+        return "Epistle"
+    if book in bible.BookGroup.NEW_TESTAMENT.books:
+        return "New Testament"
+    return "Apocrypha"
+
+def group_readings(readings):
+    groups = collections.defaultdict(list)
+    for reading in readings:
+        groups[reading_type(reading)].append(reading)
+    return groups
 
 def entries_by_date(downloaded_filename):
 
@@ -62,16 +89,20 @@ def write_lectionary_csv(filename, lectionary):
             writer.writerow(row)
 
 def write_lectionary_python(filename, lectionary):
+    """Generate the Python form of the data."""
     with open(filename, 'w') as outstream:
         outstream.write("# Providence: The person who entered this data asked not to be credited for it\n")
         outstream.write("LECTIONARY_DATA = {\n")
         for name, lityears in lectionary.items():
             outstream.write("  '%s': {\n" % name)
             for year in ('A', 'B', 'C'):
-                readings = lityears[year]
-                outstream.write("    '%s': [" % year)
-                outstream.write(",\n          ".join("'%s'" % reading for reading in readings))
-                outstream.write("],\n")
+                groups = group_readings(lityears[year])
+                outstream.write("    '%s': {\n" % year)
+                for group, readings in groups.items():
+                    outstream.write("      '%s': [\n        " % group)
+                    outstream.write(",\n        ".join("'%s'" % reading for reading in readings))
+                    outstream.write("\n      ],\n")
+                outstream.write("    },\n")
             outstream.write("  },\n")
         outstream.write("}\n")
 
