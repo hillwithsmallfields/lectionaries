@@ -5238,6 +5238,8 @@ LECTIONARY_DATA = {
   },
 }
 
+# Map the names from liturgical_calendar to the ones in the lectionary
+# data above:
 ALIASES = {
     "Ascension": "Ascension Day",
     "Christmas": "Christmas Day I",
