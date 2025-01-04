@@ -74,15 +74,3 @@ print("")
 print("lectionary entry names")
 for name in sorted(lectionaries.lectionary_data.LECTIONARY_DATA.keys()):
     print(name)
-
-def year_days_readings(year):
-    print("")
-    print("Getting readings")
-    lect = lectionaries.lectionaries.CommonWorshipLectionary()
-    for day in range(365):
-        base = datetime.date(year, 1, 1)
-        day_date = base + datetime.timedelta(days=day)
-        readings = lect.all_years_readings(day_date)
-        print(day_date, readings)
-
-year_days_readings(2025)

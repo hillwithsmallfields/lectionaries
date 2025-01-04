@@ -47,5 +47,12 @@ class CommonWorshipLectionary(Lectionary):
         lect_day_name = self.calendar.lectionary_day_name(date)
         if lect_day_name in LECTIONARY_DATA:
             return LECTIONARY_DATA[lect_day_name]
-        raise ValueError("Could not find readings for lit_cal_name=%s lect_day_name=%s", lit_cal_name, lect_day_name)
+        raise ValueError("Could not find readings for %s lit_cal_name=%s lect_day_name=%s", date.strftime("%Y-%m-%d (%a)"), lit_cal_name, lect_day_name)
         return None
+
+    def readings(self, date):
+        all_years = self.all_years_readings(date)
+        if not all_years:
+            return None
+        sunday_year, daily_year = self.cyclic_year(date.year)
+        return all_years[chr(ord('A') + sunday_year)]

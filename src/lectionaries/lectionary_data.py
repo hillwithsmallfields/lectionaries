@@ -5240,10 +5240,14 @@ LECTIONARY_DATA = {
 
 ALIASES = {
     "Ascension": "Ascension Day",
+    "Christmas": "Christmas Day I",
+    "Easter": "Easter Day",
     "Epiphany": "The Epiphany",
     "Holy Monday": "Monday in Holy Week",
+    "Holy Wednesday": "Wednesday in Holy Week",
     "Mary Magdalene": "St Mary Magdalene",
     "Michael and All Angels": "St Michael & All Angels",
+    "Pentecost": "Day of Pentecost",
     "Peter and Paul, Apostles": "St Peter & St Paul",
     "Philip and James, Apostles": "St Philip & St James",
     "Presentation of Christ at the Temple": "The Presentation",
@@ -5255,5 +5259,5 @@ ALIASES = {
     "The Holy Innocents": "Holy Innocents",
     "The Transfiguration of Our Lord": "The Transfiguration",
     "The Visit of the Blessed Virgin Mary to Elizabeth": "The Visitation",
-    "Pentecost": "Day of Pentecost",
+    "Stephen": "St Stephen",
 }
