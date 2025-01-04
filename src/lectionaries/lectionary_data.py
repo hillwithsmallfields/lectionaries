@@ -5237,3 +5237,23 @@ LECTIONARY_DATA = {
     },
   },
 }
+
+ALIASES = {
+    "Ascension": "Ascension Day",
+    "Epiphany": "The Epiphany",
+    "Holy Monday": "Monday in Holy Week",
+    "Mary Magdalene": "St Mary Magdalene",
+    "Michael and All Angels": "St Michael & All Angels",
+    "Peter and Paul, Apostles": "St Peter & St Paul",
+    "Philip and James, Apostles": "St Philip & St James",
+    "Presentation of Christ at the Temple": "The Presentation",
+    "Simon and Jude, Apostles": "St Simon & St Jude",
+    "The Annunciation of our Lord": "The Annunciation",
+    "The Birth of John the Baptist": "Nativity of St John the Baptist",
+    "The Blessed Virgin Mary": "St Mary the Virgin",
+    "The Conversion of Paul": "Conversion of St Paul",
+    "The Holy Innocents": "Holy Innocents",
+    "The Transfiguration of Our Lord": "The Transfiguration",
+    "The Visit of the Blessed Virgin Mary to Elizabeth": "The Visitation",
+    "Pentecost": "Day of Pentecost",
+}

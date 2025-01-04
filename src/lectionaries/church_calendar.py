@@ -166,7 +166,7 @@ class ChurchCalendar(ABC):
                                         if self.is_easter(date)
                                         else (Season.ORDINARY, (date - self.pentecost(date.year)).days))))))
 
-    def liturgical_week(self, date):
+    def liturgical_day_name(self, date):
         """Return the liturgical name for a date."""
         season, days_into_season = self.season_days(date)
         if date == self.christmas(date.year) - datetime.timedelta(days=1):
@@ -187,6 +187,27 @@ class ChurchCalendar(ABC):
                 + " " + date.strftime("%A")
                 + preposition + self.season_name(season))
 
+    def proper(self, date):
+        """The numbered proper for the date, if this calendar has propers."""
+        return None
+
+    def lectionary_day_name(self, date):
+        """Return the lectionary day name for a date."""
+        season, days_into_season = self.season_days(date)
+        if date == self.christmas(date.year) - datetime.timedelta(days=1):
+            return "Christmas Eve"
+        if season == Season.EPIPHANY:
+            days_to_lent = (self.ash_wednesday(date.year) - date).days
+            if days_to_lent in DAYS_TO_LENT_NAMES:
+                return DAYS_TO_LENT_NAMES[days_to_lent]
+        inflector = self.inflector()
+        if (special := SPECIAL_DAY_NAMES.get((season, days_into_season))):
+            return special
+        if (proper := self.proper(date)):
+            return "Proper %d" % proper
+        week_in_season = (days_into_season // 7)+1
+        return "%s %d" % (self.season_name(season), week_in_season)
+
 class WesternChurchCalendar(ChurchCalendar):
 
     def easter(self, year):
@@ -194,6 +215,18 @@ class WesternChurchCalendar(ChurchCalendar):
 
     def pentecost(self, year):
         return self.easter(year) + datetime.timedelta(days=49)
+
+    def _pentecost_2(self, year):
+        return self.easter(year) + datetime.timedelta(days=49+14)
+
+    def _proper_of_pentecost_2(self, year):
+        return ((self.easter(year) - datetime.date(year, 3, 20)).days // 7) + 3
+
+    def proper(self, date):
+        return ((self._proper_of_pentecost_2(date.year)
+                 + (date - self._pentecost_2(date.year)).days // 7)
+                if self.is_ordinary(date)
+                else None)
 
     def trinity_sunday(self, year):
         """Return the date of Trinity Sunday for a given year."""
