@@ -205,8 +205,13 @@ class ChurchCalendar(ABC):
             return special
         if (proper := self.proper(date)):
             return "Proper %d" % proper
-        week_in_season = (days_into_season // 7)+1
-        return "%s %d" % (self.season_name(season), week_in_season)
+        return "%s %d%s" % (self.season_name(season),
+                            # week in season:
+                            (days_into_season // 7)+1,
+                            # mark the day of the week if not Sunday:
+                            (date.strftime(" (%A)")
+                             if date.weekday() != 6
+                             else ""))
 
 class WesternChurchCalendar(ChurchCalendar):
 
@@ -225,7 +230,9 @@ class WesternChurchCalendar(ChurchCalendar):
     def proper(self, date):
         return ((self._proper_of_pentecost_2(date.year)
                  + (date - self._pentecost_2(date.year)).days // 7)
-                if self.is_ordinary(date)
+                if (self.is_ordinary(date)
+                    # Sundays only:
+                    and date.weekday() == 6)
                 else None)
 
     def trinity_sunday(self, year):

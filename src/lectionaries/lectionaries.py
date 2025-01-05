@@ -3,7 +3,7 @@
 """Christian lectionaries through a Python interface."""
 
 from abc import ABC, abstractmethod
-from enum import Enum
+from enum import StrEnum
 from typing import Tuple
 
 import liturgical_calendar.liturgical
@@ -14,13 +14,13 @@ import lectionaries.church_calendar
 from lectionaries.lectionary_data import LECTIONARY_DATA as LECTIONARY_DATA
 from lectionaries.lectionary_data import ALIASES as ALIASES
 
-class ResultFormat(Enum):
-    NAMES = 0
-    PYBIBLE = 1
-    VERSE_IDS = 2
-    TEXT_LIST = 3
-    TEXT = 4
-    HTML = 5
+class ResultFormat(StrEnum):
+    NAMES = "names"
+    PYBIBLE = "pybible"
+    VERSE_IDS = "verse-ids"
+    TEXT_LIST = "text-list"
+    TEXT = "text"
+    HTML = "html"
 
 class Lectionary(ABC):
 
@@ -75,14 +75,13 @@ class CommonWorshipLectionary(Lectionary):
         lect_day_name = self.calendar.lectionary_day_name(date)
         if lect_day_name in LECTIONARY_DATA:
             return lect_day_name, LECTIONARY_DATA[lect_day_name]
-        raise ValueError("Could not find readings for %s lit_cal_name=%s lect_day_name=%s", date.strftime("%Y-%m-%d (%a)"), lit_cal_name, lect_day_name)
         return lit_cal_name + "/" + lect_day_name, None
 
     def readings(self, date, fmt=ResultFormat.NAMES, version=Version.KING_JAMES):
         """Return the title for the day, and the readings for it for the current year of the cycle."""
         title, all_years = self.all_years_readings(date)
         if not all_years:
-            return None, None
+            return title, None
         sunday_year, daily_year = self.cyclic_year(date.year)
         readings = all_years[chr(ord('A') + sunday_year)]
         return title, {
