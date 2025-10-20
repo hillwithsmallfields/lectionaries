@@ -1,4 +1,4 @@
-# Providence: The person who entered this data asked not to be credited for it
+# Provenance: The person who entered this data asked not to be credited for it
 LECTIONARY_DATA = {
   'Epiphany 1': {
     'A': {
