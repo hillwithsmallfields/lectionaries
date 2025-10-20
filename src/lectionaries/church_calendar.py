@@ -34,10 +34,9 @@ SPECIAL_DAY_NAMES = {
     (Season.EASTER, 14): "Second Sunday after Easter",
     (Season.EASTER, 21): "Third Sunday after Easter",
     (Season.EASTER, 28): "Fourth Sunday after Easter",
-    (Season.EASTER, 28): "Fifth Sunday after Easter",
-    (Season.EASTER, 35): "Sixth Sunday after Easter",
-    (Season.EASTER, 42): "Seventh Sunday after Easter",
-    (Season.EASTER, 7): "First Sunday after Easter",
+    (Season.EASTER, 35): "Fifth Sunday after Easter",
+    (Season.EASTER, 42): "Sixth Sunday after Easter",
+    (Season.EASTER, 49): "Seventh Sunday after Easter",
     (Season.ORDINARY, 0): "Pentecost",
     (Season.ORDINARY, 7): "Trinity Sunday",
 }
@@ -47,6 +46,16 @@ DAYS_TO_LENT_NAMES = {
     3: "Quinquegesima Sunday",
     10: "Sexagesima Sunday",
     17: "Septuagesima Sunday"
+}
+
+DAYS_TO_CHRISTMAS_NAMES = {
+    2: "O Emmanuel",
+    3: "O Rex Gentium",
+    4: "O Oriens",
+    5: "O Clavis David",
+    6: "O Radix Jesse",
+    7: "O Adonai",
+    8: "O Sapientia",
 }
 
 class ChurchCalendar(ABC):
@@ -175,6 +184,10 @@ class ChurchCalendar(ABC):
             days_to_lent = (self.ash_wednesday(date.year) - date).days
             if days_to_lent in DAYS_TO_LENT_NAMES:
                 return DAYS_TO_LENT_NAMES[days_to_lent]
+        if season == Season.ADVENT:
+            days_to_christmas = (self.christmas(date.year) - date).days
+            if days_to_christmas in DAYS_TO_CHRISTMAS_NAMES:
+                return DAYS_TO_CHRISTMAS_NAMES[days_to_christmas]
         inflector = self.inflector()
         special = SPECIAL_DAY_NAMES.get((season, days_into_season))
         if special:
