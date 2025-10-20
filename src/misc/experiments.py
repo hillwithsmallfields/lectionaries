@@ -50,17 +50,14 @@ def describe_year_days(cal, year):
               "lent" if cal.is_lent(day_date) else "----",
               "easter" if cal.is_easter(day_date) else "------",
               "ordinary" if cal.is_ordinary(day_date) else "--------",
-              "% 30s % 3d" % cal.season_days(day_date),
-              cal.season_days(day_date),
-              cal.liturgical_day_name(day_date),
+              "% 30s % 4d" % cal.season_days(day_date),
+              "%- 42s" % cal.liturgical_day_name(day_date),
               "/",
-              cal.lectionary_day_name(day_date),
               "name is", litcal['name'],
               "and week is", litcal['week'],
-              "and proper is", cal.proper(day_date)
-              cal.liturgical_week(day_date))
+              "and proper is", cal.proper(day_date))
 
-cal = church_calendar.WesternChurchCalendar()
+cal = lectionaries.church_calendar.WesternChurchCalendar()
 
 days_to_christmas(40)
 years_between(cal, 2000, 2030)
