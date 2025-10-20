@@ -5263,3 +5263,10 @@ ALIASES = {
     "The Visit of the Blessed Virgin Mary to Elizabeth": "The Visitation",
     "Stephen": "St Stephen",
 }
+
+# For the entries with alternative names, make the alternatives into
+# aliases:
+for key in LECTIONARY_DATA.keys():
+    if " / " in key:
+        for key_part in key.split(" / "):
+            ALIASES[key_part] = key
