@@ -35,6 +35,7 @@ class Lectionary(ABC):
         return None
 
 def format_reference(name, fmt=ResultFormat.NAMES, version=Version.KING_JAMES):
+    """Convert a reference into one of several formats."""
     if fmt == ResultFormat.NAMES:
         return name
     reference = bible.get_references(name)[0]
